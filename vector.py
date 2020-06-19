@@ -1,13 +1,16 @@
 import math
 from decimal import *
-getcontext().prec = 16
+getcontext().prec = 30
 
 class Vector(object):
+
+    CANNOT_NORMALIZE_ZERO_VECTOR_MSG = 'Zero vector cannot be normalized'
+
     def __init__(self, coordinates):
         try:
             if not coordinates:
                 raise ValueError
-            self.coordinates = tuple([Decimal(str(x)) for x in coordinates])
+            self.coordinates = tuple([Decimal(x) for x in coordinates])
             self.dimension = len(coordinates)
 
         except ValueError:
@@ -18,7 +21,7 @@ class Vector(object):
 
 
     def __str__(self):
-        return 'Vector: {}'.format(tuple([float(x.to_eng_string()) for x in self.coordinates]))
+        return 'Vector: {}'.format(tuple([x.to_eng_string() for x in self.coordinates]))
 
 
     def __eq__(self, v):
@@ -34,35 +37,44 @@ class Vector(object):
 
 
     def mul_scalar(self, c):
-        return Vector([Decimal(str(c))*x for x in self.coordinates])
+        return Vector([Decimal(c)*x for x in self.coordinates])
 
 
     def mag(self):
-        return sum([x**Decimal(str(2)) for x in self.coordinates]).sqrt()
+        return sum([x**Decimal('2') for x in self.coordinates]).sqrt()
 
 
     def norm(self):
         try:
-            return self.mul_scalar(Decimal(str(1))/self.mag())
+            return self.mul_scalar(Decimal('1')/self.mag())
 
         except ZeroDivisionError:
-            raise Exception('Zero vector cannot be normalized')
-
-
-    def dot(self, v):
-        return sum([x*y for x,y in zip(self.coordinates, v.coordinates)])
-
-
-    def ang_rad(self, v):
-        x = float((self.dot(v) / (self.mag() * v.mag())).to_eng_string())
-        return math.acos(x)
-
-
-    def ang(self, v):
-        x = float((self.dot(v) / (self.mag() * v.mag())).to_eng_string())
-        return math.acos(x) * 180 / math.pi
+            raise Exception(self.CANNOT_NORMALIZE_ZERO_VECTOR_MSG)
 
 
     def __mul__(self, v):
-        x = self.mag() * v.mag()
-        return x * Decimal(str(math.cos(self.ang_rad(v))))
+        return sum([x*y for x,y in zip(self.coordinates, v.coordinates)])
+
+
+    # Different precision
+    # def __mul__(self, v):
+    #     x = self.mag() * v.mag()
+    #     return x * Decimal(str(math.cos(self.ang(v))))
+
+
+    def ang(self, v, in_degrees = False):
+        try:
+            # Different precision
+            # radian = math.acos(self * v / (self.mag() * v.mag()))
+            radian = math.acos(self.norm() * v.norm())
+
+            if in_degrees:
+                return str(radian * 180 / math.pi)
+            else:
+                return str(radian)
+
+        except Exception as e:
+            if str(e) == self.CANNOT_NORMALIZE_ZERO_VECTOR_MSG:
+                raise Exception('Cannot compute an angle with zero vector')
+            else:
+                raise e
