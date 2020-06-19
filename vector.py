@@ -56,16 +56,8 @@ class Vector(object):
         return sum([x*y for x,y in zip(self.coordinates, v.coordinates)])
 
 
-    # Different precision
-    # def __mul__(self, v):
-    #     x = self.mag() * v.mag()
-    #     return x * Decimal(str(math.cos(self.ang(v))))
-
-
-    def ang(self, v, in_degrees = False):
+    def ang(self, v, in_degrees = True):
         try:
-            # Different precision
-            # radian = math.acos(self * v / (self.mag() * v.mag()))
             radian = math.acos(self.norm() * v.norm())
 
             if in_degrees:

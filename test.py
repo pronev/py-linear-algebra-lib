@@ -1,13 +1,20 @@
 from vector import Vector
 from decimal import *
-getcontext().prec = 16
 
-def test(answer, true_answer):
-	if type(answer) is Vector and type(true_answer) is Vector:
-		if answer != true_answer:
+TEST_PRECISION = 12
+
+def test(answer, control):
+	if type(answer) is Vector and type(control) is Vector:
+		answer_coords = [round(Decimal(x), TEST_PRECISION) for x in answer.coordinates]
+		control_coords = [round(Decimal(x), TEST_PRECISION) for x in control.coordinates]
+		if answer_coords != control_coords:
+			print(answer_coords)
+			print(control_coords)
 			raise Exception('Test not passed')
 	else:
-		if Decimal(answer) != Decimal(true_answer):
+		if round(Decimal(answer), TEST_PRECISION) != round(Decimal(control), TEST_PRECISION):
+			print(answer)
+			print(control)
 			raise Exception('Test not passed')
 
 
@@ -48,13 +55,26 @@ v841 = Vector(['7.35', '0.221', '5.188'])
 v842 = Vector(['2.751', '8.259', '3.985'])
 # print(v811*v812)
 # print(v821*v822)
-# print(v831.ang(v832))
-# print(v841.ang(v842, True))
+# print(v831.ang(v832, False))
+# print(v841.ang(v842))
 test(v811*v812, '-41.382286')
 test(v821*v822, '56.397178')
-test(v831.ang(v832), '3.0720263098372507')
-test(v841.ang(v842, True), '60.275811205230916')
+test(v831.ang(v832, False), '3.0720263098372507')
+test(v841.ang(v842), '60.275811205230916')
 
 
+v1011 = Vector(['-7.579', '-7.88'])
+v1012 = Vector(['22.737', '23.64'])
+v1021 = Vector(['-2.029', '9.97', '4.172'])
+v1022 = Vector(['-9.231', '-6.639', '-7.245'])
+v1031 = Vector(['-2.328', '-7.284', '-1.214'])
+v1032 = Vector(['-1.821', '1.072', '-2.94'])
+v1041 = Vector(['2.118', '4.827'])
+v1042 = Vector(['0', '0'])
+
+# print(v1011.ang(v1012))
+# print(v1021.ang(v1022))
+# print(v1031.ang(v1032))
+#print(v1041.ang(v1042))
 
 print('All tests were passed successfully')
