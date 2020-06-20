@@ -8,13 +8,15 @@ def test(answer, control):
 		answer_coords = [round(Decimal(x), TEST_PRECISION) for x in answer.coordinates]
 		control_coords = [round(Decimal(x), TEST_PRECISION) for x in control.coordinates]
 		if answer_coords != control_coords:
-			print(answer_coords)
-			print(control_coords)
+			print("Expected: {0}; Got: {1} ".format(control_coords, answer_coords))
+			raise Exception('Test not passed')
+	elif type(answer) is bool and type(control) is bool:
+		if answer != control:
+			print("Expected: {0}; Got: {1} ".format(control, answer))
 			raise Exception('Test not passed')
 	else:
 		if round(Decimal(answer), TEST_PRECISION) != round(Decimal(control), TEST_PRECISION):
-			print(answer)
-			print(control)
+			print("Expected: {0}; Got: {1} ".format(control, answer))
 			raise Exception('Test not passed')
 
 
@@ -53,12 +55,12 @@ v831 = Vector(['3.183', '-7.627'])
 v832 = Vector(['-2.668', '5.319'])
 v841 = Vector(['7.35', '0.221', '5.188'])
 v842 = Vector(['2.751', '8.259', '3.985'])
-# print(v811*v812)
-# print(v821*v822)
+# print(v811.dot(v812))
+# print(v821.dot(v822))
 # print(v831.ang(v832, False))
 # print(v841.ang(v842))
-test(v811*v812, '-41.382286')
-test(v821*v822, '56.397178')
+test(v811.dot(v812), '-41.382286')
+test(v821.dot(v822), '56.397178')
 test(v831.ang(v832, False), '3.0720263098372507')
 test(v841.ang(v842), '60.275811205230916')
 
@@ -71,10 +73,26 @@ v1031 = Vector(['-2.328', '-7.284', '-1.214'])
 v1032 = Vector(['-1.821', '1.072', '-2.94'])
 v1041 = Vector(['2.118', '4.827'])
 v1042 = Vector(['0', '0'])
-
 # print(v1011.ang(v1012))
+# print(v1011.is_orthogonal_to(v1012))
+# print(v1011.is_parallel_to(v1012))
 # print(v1021.ang(v1022))
+# print(v1021.is_orthogonal_to(v1022))
+# print(v1021.is_parallel_to(v1022))
 # print(v1031.ang(v1032))
-#print(v1041.ang(v1042))
+# print(v1031.is_orthogonal_to(v1032))
+# print(v1031.is_parallel_to(v1032))
+# print(v1041.is_orthogonal_to(v1042))
+# print(v1041.is_parallel_to(v1042))
+test(v1011.is_orthogonal_to(v1012), False)
+test(v1011.is_parallel_to(v1012), True)
+test(v1021.is_orthogonal_to(v1022), False)
+test(v1021.is_parallel_to(v1022), False)
+test(v1031.is_orthogonal_to(v1032), True)
+test(v1031.is_parallel_to(v1032), False)
+test(v1041.is_orthogonal_to(v1042), True)
+test(v1041.is_parallel_to(v1042), True)
+
+
 
 print('All tests were passed successfully')
